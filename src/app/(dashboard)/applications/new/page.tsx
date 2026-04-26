@@ -1,228 +1,171 @@
 "use client";
 
 import React, { useState } from "react";
-import { useRouter } from "next/navigation";
-import { ArrowLeft, Upload, Search, Building2, UserCircle2, CheckCircle2, Sparkles, Loader2 } from "lucide-react";
+import { ArrowLeft, Building2, Loader2, DollarSign } from "lucide-react";
 import { Button } from "@/components/ui/Button";
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
-import { useApplications } from "@/lib/store";
+import { Card } from "@/components/ui/Card";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
-
-// Mock KYB Data
-const MOCK_COMPANIES: Record<string, any> = {
-    "RC123456": {
-        name: "TechNova Solutions Ltd",
-        address: "15 Admiralty Way, Lekki Phase 1, Lagos",
-        directors: [
-            { name: "Chinedu Okechukwu", role: "Managing Director" },
-            { name: "Sarah Alabi", role: "Technical Director" }
-        ]
-    },
-    "RC789012": {
-        name: "GreenField Agriculture Co.",
-        address: "Km 12, Ibadan-Ife Expressway, Oyo State",
-        directors: [
-            { name: "Baba Tunde", role: "Chairman" },
-            { name: "Olumide Johnson", role: "COO" }
-        ]
-    }
-};
+import { useApplicationStore } from "@/lib/store";
 
 export default function NewApplication() {
     const router = useRouter();
-    const { addApplication } = useApplications();
+    const [isSearching, setIsSearching] = useState(false);
+    const [rcNumber, setRcNumber] = useState("");
+    const [companyData, setCompanyData] = useState<{ name: string; address: string; directors: { name: string; role: string }[] } | null>(null);
+    const { addApplication } = useApplicationStore();
+    const [amount, setAmount] = useState("");
+    const [tenure, setTenure] = useState("");
+    const [purpose, setPurpose] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [isLookingUp, setIsLookingUp] = useState(false);
-    const [lookupSuccess, setLookupSuccess] = useState(false);
 
-    const [form, setForm] = useState({
-        applicantName: "",
-        rcNumber: "",
-        companyAddress: "",
-        amount: "",
-        purpose: "",
-        directors: [] as Array<{ name: string; role: string }>,
-    });
-
-    const handleLookup = async () => {
-        if (!form.rcNumber) return;
-        setIsLookingUp(true);
-        setLookupSuccess(false);
-
-        // Simulate API delay
+    const handleSearch = async () => {
+        if (!rcNumber) return;
+        setIsSearching(true);
+        // Mock CAC lookup
         await new Promise(r => setTimeout(r, 1500));
-
-        const company = MOCK_COMPANIES[form.rcNumber.toUpperCase()];
-        if (company) {
-            setForm({
-                ...form,
-                applicantName: company.name,
-                companyAddress: company.address,
-                directors: company.directors
-            });
-            setLookupSuccess(true);
-        } else {
-            alert("Company details not found for this RC Number. You can still fill the form manually.");
-        }
-        setIsLookingUp(false);
+        setCompanyData({
+            name: "Nexus Innovations Ltd",
+            address: "12 Admiralty Way, Lekki Phase 1, Lagos",
+            directors: [
+                { name: "Bolanle Peters", role: "MD" },
+                { name: "Chidi Okafor", role: "Director" }
+            ]
+        });
+        setIsSearching(false);
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        if (!companyData || isSubmitting) return;
+
         setIsSubmitting(true);
-        await new Promise(r => setTimeout(r, 1000));
-
-        addApplication({
-            applicantName: form.applicantName,
-            rcNumber: form.rcNumber,
-            companyAddress: form.companyAddress,
-            directors: form.directors,
-            amount: parseFloat(form.amount),
-            purpose: form.purpose,
-            documents: [{ name: "CAC Certificate.pdf", url: "#" }, { name: "Board Resolution.pdf", url: "#" }],
-        });
-
-        router.push("/");
+        try {
+            await addApplication({
+                applicantName: companyData.name,
+                rcNumber: rcNumber,
+                companyAddress: companyData.address,
+                directors: companyData.directors,
+                amount: Number(amount.replace(/,/g, "")),
+                tenure: Number(tenure),
+                purpose: purpose,
+                industry: "Technology", // Mock fetched industry
+                documents: [], // Handle uploads separately if needed
+            });
+            router.push("/applications/all");
+        } catch (error) {
+            console.error("Submission error:", error);
+            setIsSubmitting(false);
+        }
     };
 
     return (
-        <div className="p-8 max-w-3xl mx-auto w-full">
-            <Button
-                variant="ghost"
-                onClick={() => router.back()}
-                className="mb-8 -ml-4"
-            >
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Back
-            </Button>
+        <div className="p-8 max-w-4xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <Link href="/applications/all" className="flex items-center gap-2 text-sm text-slate-body hover:text-navy-deep transition-colors">
+                <ArrowLeft className="w-4 h-4" />
+                Back to Applications
+            </Link>
 
-            <div className="space-y-6">
-                {/* Smart Lookup Box */}
-                <Card className="border-none stripe-shadow bg-brand-purple text-white overflow-hidden relative">
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -mr-32 -mt-32 blur-3xl pointer-events-none" />
-                    <CardContent className="p-8 relative z-10">
-                        <h3 className="text-xl font-light mb-2 flex items-center gap-2">
-                            <Sparkles className="w-5 h-5 text-yellow-300" />
-                            Smart Company Lookup
-                        </h3>
-                        <p className="text-white/70 text-sm mb-6">Enter a Nigerian RC Number to instantly fetch company and director records.</p>
+            <header>
+                <h1 className="text-3xl font-light text-navy-deep">New Loan Application</h1>
+                <p className="text-slate-body mt-2">Enter the RC Number to autofill company data from the CAC database.</p>
+            </header>
+
+            <div className="grid grid-cols-1 gap-8">
+                <Card className="stripe-shadow border-none p-8 bg-white">
+                    <div className="max-w-md space-y-4">
+                        <label className="text-[10px] font-bold text-slate-label uppercase tracking-widest">CAC RC Number</label>
                         <div className="flex gap-3">
                             <div className="relative flex-1">
-                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/50" />
-                                <input
-                                    type="text"
-                                    placeholder="e.g. RC123456"
-                                    className="w-full bg-white/10 border border-white/20 rounded-stripe h-11 pl-10 pr-4 text-white placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-white/20 transition-all font-mono uppercase tracking-wider"
-                                    value={form.rcNumber}
-                                    onChange={e => setForm({ ...form, rcNumber: e.target.value })}
-                                    onKeyDown={e => e.key === 'Enter' && handleLookup()}
+                                <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-body/50" />
+                                <Input
+                                    placeholder="e.g. RC-123456"
+                                    className="pl-10 h-12"
+                                    value={rcNumber}
+                                    onChange={e => setRcNumber(e.target.value)}
                                 />
                             </div>
-                            <Button
-                                onClick={handleLookup}
-                                disabled={isLookingUp}
-                                className="bg-white text-brand-purple hover:bg-slate-50 border-none shadow-xl h-11 px-8 font-semibold"
-                            >
-                                {isLookingUp ? <Loader2 className="w-5 h-5 animate-spin" /> : "Verify Details"}
+                            <Button onClick={handleSearch} disabled={isSearching} className="h-12 px-6">
+                                {isSearching ? <Loader2 className="w-4 h-4 animate-spin" /> : "Lookup"}
                             </Button>
                         </div>
-                    </CardContent>
-                </Card>
+                    </div>
 
-                <Card className="stripe-shadow border-none">
-                    <CardHeader className="border-b border-slate-border pb-6">
-                        <CardTitle className="text-2xl font-light">Application Details</CardTitle>
-                        <p className="text-slate-body text-sm font-light">Review and complete the loan request information.</p>
-                    </CardHeader>
-                    <form onSubmit={handleSubmit}>
-                        <CardContent className="space-y-8 py-8">
-                            {/* Basic Details */}
-                            <div className="space-y-6">
-                                <h4 className="text-[10px] font-bold text-slate-body uppercase tracking-[0.2em]">Company Profile</h4>
-                                <div className="grid grid-cols-2 gap-6">
-                                    <div className="space-y-2">
-                                        <label className="text-xs font-semibold text-slate-label uppercase tracking-wider">Registered Company Name</label>
-                                        <Input
-                                            required
-                                            placeholder="e.g. Acme Africa Ltd"
-                                            value={form.applicantName}
-                                            onChange={e => setForm({ ...form, applicantName: e.target.value })}
-                                            className={cn(lookupSuccess && "border-success-green bg-success-green/[0.02]")}
-                                        />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <label className="text-xs font-semibold text-slate-label uppercase tracking-wider">Loan Amount ($)</label>
-                                        <Input
-                                            required
-                                            type="number"
-                                            placeholder="0.00"
-                                            value={form.amount}
-                                            onChange={e => setForm({ ...form, amount: e.target.value })}
-                                        />
-                                    </div>
-                                </div>
-
-                                <div className="space-y-2">
-                                    <label className="text-xs font-semibold text-slate-label uppercase tracking-wider">Official Address</label>
-                                    <Input
-                                        placeholder="Headquarters location"
-                                        value={form.companyAddress}
-                                        onChange={e => setForm({ ...form, companyAddress: e.target.value })}
-                                    />
-                                </div>
+                    {companyData && (
+                        <div className="mt-8 pt-8 border-t border-slate-50 animate-in fade-in slide-in-from-top-2 duration-500">
+                            <div className="flex items-center gap-3 mb-6">
+                                <div className="px-3 py-1 bg-success-green/10 text-success-green text-[10px] font-bold rounded-full uppercase tracking-widest whitespace-nowrap">Verified Entity</div>
+                                <span className="text-sm font-semibold text-navy-deep">{companyData.name}</span>
                             </div>
 
-                            {/* Directors Section */}
-                            {form.directors.length > 0 && (
-                                <div className="space-y-4 animate-in fade-in slide-in-from-top-4 duration-500">
-                                    <h4 className="text-[10px] font-bold text-slate-body uppercase tracking-[0.2em] flex items-center gap-2">
-                                        <UserCircle2 className="w-3 h-3" />
-                                        Verified Directors
-                                    </h4>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        {form.directors.map((d, i) => (
-                                            <div key={i} className="flex items-center gap-3 p-3 bg-[#f8fafc] border border-slate-border rounded-stripe">
-                                                <div className="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center text-[10px] font-bold text-slate-body">
-                                                    {d.name.substring(0, 2).toUpperCase()}
-                                                </div>
-                                                <div>
-                                                    <p className="text-sm font-medium text-navy-deep">{d.name}</p>
-                                                    <p className="text-[10px] text-slate-body uppercase tracking-wider">{d.role}</p>
-                                                </div>
-                                                <CheckCircle2 className="w-4 h-4 text-success-green ml-auto" />
-                                            </div>
+                            <div className="grid grid-cols-2 gap-8">
+                                <div className="space-y-4">
+                                    <p className="text-[10px] font-bold text-slate-label uppercase tracking-widest">Registered Address</p>
+                                    <p className="text-sm text-slate-body leading-relaxed">{companyData.address}</p>
+                                </div>
+                                <div className="space-y-4">
+                                    <p className="text-[10px] font-bold text-slate-label uppercase tracking-widest">Directors</p>
+                                    <div className="flex flex-wrap gap-2">
+                                        {companyData.directors.map((d: { name: string }) => (
+                                            <span key={d.name} className="px-2 py-1 bg-slate-100 rounded text-[10px] font-medium text-navy-deep">{d.name}</span>
                                         ))}
                                     </div>
                                 </div>
-                            )}
-
-                            <div className="space-y-2">
-                                <label className="text-xs font-semibold text-slate-label uppercase tracking-wider">Purpose of Loan</label>
-                                <textarea
-                                    required
-                                    className="flex min-h-[100px] w-full rounded-stripe border border-slate-border bg-white px-3 py-2 text-sm text-navy-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-purple/20 transition-all shadow-sm"
-                                    placeholder="Detail the reason for this loan request..."
-                                    value={form.purpose}
-                                    onChange={e => setForm({ ...form, purpose: e.target.value })}
-                                />
                             </div>
+                        </div>
+                    )}
+                </Card>
 
+                <Card className={cn("stripe-shadow border-none p-8 bg-white transition-opacity duration-500", !companyData && "opacity-50 pointer-events-none")}>
+                    <h3 className="text-lg font-semibold text-navy-deep mb-8">Loan Particulars</h3>
+                    <form className="space-y-6 max-w-xl" onSubmit={handleSubmit}>
+                        <div className="grid grid-cols-2 gap-6">
                             <div className="space-y-2">
-                                <label className="text-xs font-semibold text-slate-label uppercase tracking-wider">Mandatory Uploads</label>
-                                <div className="border-2 border-dashed border-slate-border rounded-stripe p-8 text-center bg-slate-50/50 hover:bg-slate-50 transition-colors cursor-pointer group">
-                                    <Upload className="w-6 h-6 text-slate-body mx-auto mb-3 group-hover:text-brand-purple transition-all" />
-                                    <p className="text-sm font-medium text-navy-deep">Drop CAC documents here</p>
-                                    <p className="text-xs text-slate-body mt-1">Maximum file size: 5MB</p>
+                                <label className="text-[10px] font-bold text-slate-label uppercase tracking-widest">Requested Amount (NGN)</label>
+                                <div className="relative">
+                                    <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-body/50" />
+                                    <Input
+                                        required
+                                        placeholder="2,500,000"
+                                        className="pl-10"
+                                        value={amount}
+                                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setAmount(e.target.value)}
+                                    />
                                 </div>
                             </div>
-                        </CardContent>
-                        <CardFooter className="bg-[#f8fafc] border-t border-slate-border flex justify-end gap-3 py-4 rounded-b-stripe">
-                            <Button type="button" variant="ghost" onClick={() => router.back()}>Cancel</Button>
-                            <Button type="submit" disabled={isSubmitting}>
-                                {isSubmitting ? "Submitting..." : "Proceed to Review"}
+                            <div className="space-y-2">
+                                <label className="text-[10px] font-bold text-slate-label uppercase tracking-widest">Loan Tenure (Months)</label>
+                                <Input
+                                    required
+                                    placeholder="12"
+                                    value={tenure}
+                                    onChange={e => setTenure(e.target.value)}
+                                />
+                            </div>
+                        </div>
+                        <div className="space-y-2">
+                            <label className="text-[10px] font-bold text-slate-label uppercase tracking-widest">Purpose of Loan</label>
+                            <textarea
+                                required
+                                className="w-full min-h-[100px] bg-slate-50 border border-slate-200 rounded-lg p-4 text-sm focus:outline-none focus:ring-2 focus:ring-brand-purple/20 transition-all font-inter"
+                                placeholder="Briefly describe the use of funds..."
+                                value={purpose}
+                                onChange={e => setPurpose(e.target.value)}
+                            ></textarea>
+                        </div>
+                        <div className="flex gap-4 pt-4">
+                            <Button
+                                type="submit"
+                                disabled={isSubmitting}
+                                className="h-12 px-10 shadow-lg shadow-brand-purple/20"
+                            >
+                                {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
+                                Submit for Review
                             </Button>
-                        </CardFooter>
+                            <Button variant="ghost" type="button" className="h-12 px-6 text-slate-body">Save Draft</Button>
+                        </div>
                     </form>
                 </Card>
             </div>

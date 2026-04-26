@@ -1,31 +1,45 @@
 "use client";
 
 import React from "react";
-import { History, Clock, Filter } from "lucide-react";
+import { Clock, CheckCircle2, AlertCircle, RefreshCw, XCircle } from "lucide-react";
 import { Card } from "@/components/ui/Card";
+import { cn } from "@/lib/utils";
 
 export default function ActivityPage() {
     return (
-        <div className="flex-1 p-12 bg-[#f6f9fc]">
-            <div className="max-w-4xl mx-auto w-full space-y-8">
-                <div className="flex justify-between items-end">
-                    <div>
-                        <h1 className="text-3xl font-light text-navy-deep mb-2">Activity</h1>
-                        <p className="text-slate-body">A real-time audit log of all decisions and application movements.</p>
-                    </div>
-                    <button className="flex items-center gap-2 text-xs font-bold text-slate-body uppercase tracking-widest border border-slate-border px-3 py-2 rounded-stripe hover:bg-white transition-all bg-slate-50">
-                        <Filter className="w-3 h-3" /> Filter Log
-                    </button>
-                </div>
+        <div className="max-w-5xl mx-auto space-y-8 animate-in fade-in duration-500">
+            <header>
+                <h1 className="text-3xl font-light text-navy-deep">System Activity</h1>
+                <p className="text-slate-body mt-2">A real-time audit log of all actions occurring across the platform.</p>
+            </header>
 
-                <Card className="p-20 text-center space-y-4 border-none stripe-shadow bg-white">
-                    <Clock className="w-12 h-12 text-slate-border mx-auto animate-pulse" />
-                    <h3 className="text-xl font-medium text-navy-deep">Initializing Activity Log</h3>
-                    <p className="text-sm text-slate-body max-w-sm mx-auto">
-                        Once you start processing applications, all approval actions, rejections, and comments will be logged here for compliance auditing.
-                    </p>
-                </Card>
-            </div>
+            <Card className="stripe-shadow border-none overflow-hidden bg-white">
+                <div className="divide-y divide-slate-50">
+                    {[
+                        { user: "Sarah Alabi", action: "approved Tier 2", detail: "Nexus Innovations Ltd", time: "2m ago", icon: CheckCircle2, color: "text-success-green" },
+                        { user: "System", action: "CAC Verification", detail: "RC-12345 Verified", time: "15m ago", icon: RefreshCw, color: "text-brand-purple" },
+                        { user: "Tunde Ednut", action: "submitted new application", detail: "Yaba Retail Ventures", time: "1h ago", icon: Clock, color: "text-slate-400" },
+                        { user: "John Doe", action: "requested changes", detail: "Tier 1: Document Upload", time: "3h ago", icon: AlertCircle, color: "text-warning-lemon" },
+                        { user: "Legal Counsel", action: "rejected final approval", detail: "RC-92812 Compliance issue", time: "5h ago", icon: XCircle, color: "text-red-500" },
+                    ].map((act, i) => (
+                        <div key={i} className="p-6 flex items-start gap-4 hover:bg-slate-50/50 transition-colors">
+                            <div className={cn("w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center flex-shrink-0", act.color)}>
+                                <act.icon className="w-5 h-5" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <div className="flex items-center justify-between gap-4">
+                                    <p className="text-sm font-semibold text-navy-deep">{act.user}</p>
+                                    <span className="text-xs text-slate-400 whitespace-nowrap">{act.time}</span>
+                                </div>
+                                <p className="text-sm text-slate-body mt-1">
+                                    <span className="font-medium text-navy-deep">{act.action}</span> for {act.detail}
+                                </p>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </Card>
         </div>
     );
 }
+

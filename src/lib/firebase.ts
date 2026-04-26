@@ -1,19 +1,20 @@
 import { initializeApp, getApps } from "firebase/app";
-import { getAuth } from "firebase/auth";
+import { getAuth, GoogleAuthProvider } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
-    // Placeholder config - user or system should replace with real credentials from console
-    apiKey: "AIzaSyAs-MOCK-API-KEY",
+    apiKey: "AIzaSyDlx7mFYVNZIl70iTF57dPQPW0LFDlGCtY",
     authDomain: "creditgenie-nexus.firebaseapp.com",
     projectId: "creditgenie-nexus",
     storageBucket: "creditgenie-nexus.firebasestorage.app",
-    messagingSenderId: "123456789",
-    appId: "1:123456789:web:abcdef123456"
+    messagingSenderId: "895881881952",
+    appId: "1:895881881952:web:7cc55d0b0f30748c9ad605",
+    databaseURL: "https://creditgenie-nexus-default-rtdb.firebaseio.com"
 };
 
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
 const auth = getAuth(app);
 const db = getFirestore(app);
+const googleProvider = new GoogleAuthProvider();
 
-export { auth, db };
+export { auth, db, googleProvider };

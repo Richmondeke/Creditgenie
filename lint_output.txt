@@ -1,0 +1,40 @@
+
+> creditgenie@0.1.0 lint
+> eslint
+
+
+/Users/mac/.gemini/antigravity/scratch/Creditgenie/src/app/(auth)/login/page.tsx
+  99:62  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+/Users/mac/.gemini/antigravity/scratch/Creditgenie/src/app/(auth)/signup/page.tsx
+  6:82  warning  'Check' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/mac/.gemini/antigravity/scratch/Creditgenie/src/app/(dashboard)/activity/page.tsx
+  6:10  warning  'Badge' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/mac/.gemini/antigravity/scratch/Creditgenie/src/app/(dashboard)/applications/[id]/page.tsx
+    4:91   warning  'XCircle' is defined but never used                              @typescript-eslint/no-unused-vars
+   13:11   warning  'params' is assigned a value but never used                      @typescript-eslint/no-unused-vars
+   14:11   warning  'router' is assigned a value but never used                      @typescript-eslint/no-unused-vars
+   16:12   warning  'isLoading' is assigned a value but never used                   @typescript-eslint/no-unused-vars
+   36:121  error    Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
+  153:29   error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  153:159  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+
+/Users/mac/.gemini/antigravity/scratch/Creditgenie/src/app/(dashboard)/applications/all/page.tsx
+    9:5   warning  'ArrowUpRight' is defined but never used  @typescript-eslint/no-unused-vars
+  109:26  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  115:47  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  116:25  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/mac/.gemini/antigravity/scratch/Creditgenie/src/app/(dashboard)/applications/new/page.tsx
+  4:32  warning  'Search' is defined but never used    @typescript-eslint/no-unused-vars
+  4:49  warning  'Sparkles' is defined but never used  @typescript-eslint/no-unused-vars
+  4:59  warning  'User' is defined but never used      @typescript-eslint/no-unused-vars
+  4:65  warning  'Mail' is defined but never used      @typescript-eslint/no-unused-vars
+
+/Users/mac/.gemini/antigravity/scratch/Creditgenie/src/lib/store.ts
+  148:8  warning  React Hook React.useEffect has a missing dependency: 'store'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+✖ 19 problems (7 errors, 12 warnings)
+
