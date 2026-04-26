@@ -13,16 +13,18 @@ import {
     X,
     CreditCard,
     History,
-    HelpCircle
+    HelpCircle,
+    ShieldCheck
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "./ui/Button";
 
 const navItems = [
-    { name: "Dashboard", href: "/", icon: LayoutDashboard },
+    { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
     { name: "Applications", href: "/applications/all", icon: CreditCard },
     { name: "Reviews", href: "/reviews", icon: CheckCircle2 },
     { name: "Archive", href: "/archive", icon: Archive },
+    { name: "Admin Portal", href: "/admin", icon: ShieldCheck },
 ];
 
 const secondaryItems = [
