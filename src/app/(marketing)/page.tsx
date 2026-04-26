@@ -14,14 +14,15 @@ export default function LandingPage() {
             <nav className="fixed top-0 w-full z-50 bg-white/90 backdrop-blur-md border-b border-slate-100">
                 <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
                     <div className="flex items-center">
-                        <div className="w-24 h-24 overflow-hidden flex items-center justify-center flex-shrink-0">
+                        <div className="w-16 h-16 md:w-24 md:h-24 overflow-hidden flex items-center justify-center flex-shrink-0">
                             <img src="/images/Lydra4.png" alt="Lydraflow Logo" className="w-full h-full object-contain" />
                         </div>
                     </div>
-                    <div className="flex items-center gap-6">
-                        <Link href="/login" className="text-sm font-medium text-slate-500 hover:text-navy-deep transition-colors">Sign in</Link>
+                    <div className="flex items-center gap-3 md:gap-6">
+                        <Link href="/login" className="text-sm font-medium text-slate-500 hover:text-navy-deep transition-colors whitespace-nowrap">Sign in</Link>
                         <Link href="/signup">
-                            <Button size="sm">Get Started</Button>
+                            <Button size="sm" className="hidden xs:inline-flex">Get Started</Button>
+                            <Button size="sm" className="xs:hidden">Join</Button>
                         </Link>
                     </div>
                 </div>
