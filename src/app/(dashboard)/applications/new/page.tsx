@@ -24,14 +24,13 @@ export default function NewApplication() {
     const handleSearch = async () => {
         if (!rcNumber) return;
         setIsSearching(true);
-        // Mock CAC lookup
-        await new Promise(r => setTimeout(r, 1500));
+        // Simulate real API lookup delay
+        await new Promise(r => setTimeout(r, 1000));
         setCompanyData({
-            name: "Nexus Innovations Ltd",
-            address: "12 Admiralty Way, Lekki Phase 1, Lagos",
+            name: `Company registered as ${rcNumber}`,
+            address: "Verified registration address",
             directors: [
-                { name: "Bolanle Peters", role: "MD" },
-                { name: "Chidi Okafor", role: "Director" }
+                { name: "Primary Director", role: "MD" },
             ]
         });
         setIsSearching(false);
@@ -63,53 +62,53 @@ export default function NewApplication() {
 
     return (
         <div className="p-8 max-w-4xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <Link href="/applications/all" className="flex items-center gap-2 text-sm text-slate-body hover:text-navy-deep transition-colors">
+            <Link href="/applications/all" className="flex items-center gap-2 text-sm text-slate-body hover:text-navy-deep transition-colors font-normal">
                 <ArrowLeft className="w-4 h-4" />
                 Back to Applications
             </Link>
 
-            <header>
-                <h1 className="text-3xl font-light text-navy-deep">New Loan Application</h1>
-                <p className="text-slate-body mt-2">Enter the RC Number to autofill company data from the CAC database.</p>
+            <header className="space-y-2">
+                <h1 className="text-4xl font-light text-navy-deep tracking-tight-large">New Application</h1>
+                <p className="text-slate-body text-base max-w-lg leading-relaxed font-light">Enter your RC Number to verify your business and start your application.</p>
             </header>
 
             <div className="grid grid-cols-1 gap-8">
-                <Card className="stripe-shadow border-none p-8 bg-white">
+                <Card className="p-8 bg-white shadow-stripe border-slate-border rounded-[5px]">
                     <div className="max-w-md space-y-4">
-                        <label className="text-[10px] font-bold text-slate-label uppercase tracking-widest">CAC RC Number</label>
+                        <label className="text-[10px] font-normal text-slate-label uppercase tracking-widest">Business RC Number</label>
                         <div className="flex gap-3">
                             <div className="relative flex-1">
-                                <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-body/50" />
+                                <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300" />
                                 <Input
                                     placeholder="e.g. RC-123456"
-                                    className="pl-10 h-12"
+                                    className="pl-10 h-12 rounded-[4px] bg-white border border-slate-border shadow-stripe-ambient font-normal"
                                     value={rcNumber}
                                     onChange={e => setRcNumber(e.target.value)}
                                 />
                             </div>
-                            <Button onClick={handleSearch} disabled={isSearching} className="h-12 px-6">
-                                {isSearching ? <Loader2 className="w-4 h-4 animate-spin" /> : "Lookup"}
+                            <Button onClick={handleSearch} disabled={isSearching} className="h-12 px-6 rounded-[4px] shadow-stripe-ambient font-normal">
+                                {isSearching ? <Loader2 className="w-4 h-4 animate-spin" /> : "Verify"}
                             </Button>
                         </div>
                     </div>
 
                     {companyData && (
-                        <div className="mt-8 pt-8 border-t border-slate-50 animate-in fade-in slide-in-from-top-2 duration-500">
+                        <div className="mt-8 pt-8 border-t border-slate-border animate-in fade-in slide-in-from-top-2 duration-500">
                             <div className="flex items-center gap-3 mb-6">
-                                <div className="px-3 py-1 bg-success-green/10 text-success-green text-[10px] font-bold rounded-full uppercase tracking-widest whitespace-nowrap">Verified Entity</div>
-                                <span className="text-sm font-semibold text-navy-deep">{companyData.name}</span>
+                                <div className="px-3 py-1 bg-success-green/10 text-success-green text-[10px] font-normal rounded-full uppercase tracking-widest whitespace-nowrap">Verified</div>
+                                <span className="text-sm font-normal text-navy-deep">{companyData.name}</span>
                             </div>
 
                             <div className="grid grid-cols-2 gap-8">
                                 <div className="space-y-4">
-                                    <p className="text-[10px] font-bold text-slate-label uppercase tracking-widest">Registered Address</p>
-                                    <p className="text-sm text-slate-body leading-relaxed">{companyData.address}</p>
+                                    <p className="text-[10px] font-normal text-slate-label uppercase tracking-widest">Address</p>
+                                    <p className="text-sm text-slate-body leading-relaxed font-light">{companyData.address}</p>
                                 </div>
                                 <div className="space-y-4">
-                                    <p className="text-[10px] font-bold text-slate-label uppercase tracking-widest">Directors</p>
+                                    <p className="text-[10px] font-normal text-slate-label uppercase tracking-widest">Directors</p>
                                     <div className="flex flex-wrap gap-2">
                                         {companyData.directors.map((d: { name: string }) => (
-                                            <span key={d.name} className="px-2 py-1 bg-slate-100 rounded text-[10px] font-medium text-navy-deep">{d.name}</span>
+                                            <span key={d.name} className="px-3 py-1 bg-white border border-slate-border rounded-[4px] text-[10px] font-normal text-navy-deep uppercase tracking-wider shadow-stripe-ambient">{d.name}</span>
                                         ))}
                                     </div>
                                 </div>
@@ -118,39 +117,40 @@ export default function NewApplication() {
                     )}
                 </Card>
 
-                <Card className={cn("stripe-shadow border-none p-8 bg-white transition-opacity duration-500", !companyData && "opacity-50 pointer-events-none")}>
-                    <h3 className="text-lg font-semibold text-navy-deep mb-8">Loan Particulars</h3>
+                <Card className={cn("p-8 bg-white transition-all duration-500 shadow-stripe border-slate-border rounded-[5px]", !companyData && "opacity-40 grayscale pointer-events-none")}>
+                    <h3 className="text-xl font-normal text-navy-deep mb-8 tracking-tight">Loan Details</h3>
                     <form className="space-y-6 max-w-xl" onSubmit={handleSubmit}>
                         <div className="grid grid-cols-2 gap-6">
                             <div className="space-y-2">
-                                <label className="text-[10px] font-bold text-slate-label uppercase tracking-widest">Requested Amount (NGN)</label>
+                                <label className="text-[10px] font-normal text-slate-label uppercase tracking-widest">Amount (NGN)</label>
                                 <div className="relative">
-                                    <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-body/50" />
+                                    <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300" />
                                     <Input
                                         required
                                         placeholder="2,500,000"
-                                        className="pl-10"
+                                        className="pl-10 rounded-[4px] h-12 bg-white border border-slate-border shadow-stripe-ambient font-normal"
                                         value={amount}
                                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => setAmount(e.target.value)}
                                     />
                                 </div>
                             </div>
                             <div className="space-y-2">
-                                <label className="text-[10px] font-bold text-slate-label uppercase tracking-widest">Loan Tenure (Months)</label>
+                                <label className="text-[10px] font-normal text-slate-label uppercase tracking-widest">Tenure (Months)</label>
                                 <Input
                                     required
                                     placeholder="12"
+                                    className="rounded-[4px] h-12 bg-white border border-slate-border shadow-stripe-ambient font-normal"
                                     value={tenure}
                                     onChange={e => setTenure(e.target.value)}
                                 />
                             </div>
                         </div>
                         <div className="space-y-2">
-                            <label className="text-[10px] font-bold text-slate-label uppercase tracking-widest">Purpose of Loan</label>
+                            <label className="text-[10px] font-normal text-slate-label uppercase tracking-widest">Why do you need this loan?</label>
                             <textarea
                                 required
-                                className="w-full min-h-[100px] bg-slate-50 border border-slate-200 rounded-lg p-4 text-sm focus:outline-none focus:ring-2 focus:ring-brand-purple/20 transition-all font-inter"
-                                placeholder="Briefly describe the use of funds..."
+                                className="w-full min-h-[120px] bg-white border border-slate-border rounded-[4px] p-4 text-sm text-navy-deep focus:outline-none focus:ring-1 focus:ring-brand-purple/20 transition-all font-normal shadow-stripe-ambient"
+                                placeholder="Tell us more..."
                                 value={purpose}
                                 onChange={e => setPurpose(e.target.value)}
                             ></textarea>
@@ -159,12 +159,12 @@ export default function NewApplication() {
                             <Button
                                 type="submit"
                                 disabled={isSubmitting}
-                                className="h-12 px-10 shadow-lg shadow-brand-purple/20"
+                                className="h-12 px-10 shadow-stripe-ambient rounded-[4px] font-normal"
                             >
                                 {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
-                                Submit for Review
+                                Submit
                             </Button>
-                            <Button variant="ghost" type="button" className="h-12 px-6 text-slate-body">Save Draft</Button>
+                            <Button variant="ghost" type="button" className="h-12 px-6 text-slate-body font-normal hover:bg-slate-50 rounded-[4px]">Save</Button>
                         </div>
                     </form>
                 </Card>

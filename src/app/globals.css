@@ -10,6 +10,7 @@
   
   --color-navy-deep: #061b31;
   --color-navy-dark: #0d253d;
+  --color-navy-brand: #1c1e54;
   
   --color-slate-body: #64748d;
   --color-slate-label: #273951;
@@ -17,11 +18,11 @@
   
   --color-success-green: #15be53;
   --color-success-text: #108c3d;
-  
-  --shadow-stripe: 0 30px 45px -30px rgba(50,50,93,0.25), 0 18px 36px -18px rgba(0,0,0,0.1);
-  --shadow-ambient: 0 15px 35px 0 rgba(23,23,23,0.08);
 
-  --radius-stripe: 4px;
+  /* Stripe Signature Shadows */
+  --shadow-stripe: rgba(50, 50, 93, 0.25) 0px 30px 45px -30px, rgba(0, 0, 0, 0.1) 0px 18px 36px -18px;
+  --shadow-stripe-elevated: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px, rgba(0, 0, 0, 0.1) 0px 18px 36px -18px;
+  --shadow-stripe-ambient: rgba(23, 23, 23, 0.08) 0px 15px 35px 0px;
 }
 
 @layer base {
@@ -29,20 +30,25 @@
     @apply border-slate-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-slate-body font-light;
     font-feature-settings: "ss01", "tnum";
+    -webkit-font-smoothing: antialiased;
   }
 }
 
-.stripe-shadow {
-  box-shadow: var(--shadow-stripe);
-}
-
-.ambient-shadow {
-  box-shadow: var(--shadow-ambient);
-}
-
 h1, h2, h3, h4, h5, h6 {
-  @apply text-navy-deep font-light tracking-tight;
+  @apply text-navy-deep font-light;
   font-feature-settings: "ss01";
+}
+
+.tracking-tight-display {
+  letter-spacing: -1.4px;
+}
+
+.tracking-tight-large {
+  letter-spacing: -0.96px;
+}
+
+.tracking-tight-section {
+  letter-spacing: -0.64px;
 }

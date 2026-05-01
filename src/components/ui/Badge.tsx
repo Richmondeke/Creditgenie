@@ -17,7 +17,7 @@ const Badge = ({ className, variant = "neutral", ...props }: BadgeProps) => {
     return (
         <div
             className={cn(
-                "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium transition-colors",
+                "inline-flex items-center rounded-full border px-2.5 py-0.5 text-[10px] font-normal uppercase tracking-widest transition-colors",
                 variants[variant],
                 className
             )}

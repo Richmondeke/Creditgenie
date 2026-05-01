@@ -1,4 +1,4 @@
-export type UserRole = "USER" | "STAFF" | "TEAM_LEAD" | "CREDIT" | "LEGAL";
+export type UserRole = "USER" | "STAFF" | "TEAM_LEAD" | "CREDIT" | "LEGAL" | "ADMIN";
 
 export type ApplicationStatus =
     | "DRAFT"

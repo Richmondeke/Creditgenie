@@ -1,12 +1,9 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/components/AuthProvider";
 
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-});
+// Use a system font stack to avoid Google Fonts fetch issues during build
+const fontStack = "Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji'";
 
 export const metadata: Metadata = {
   title: "Lydraflow | The operating system for loan automation.",
@@ -22,7 +19,17 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={inter.variable}>
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <style dangerouslySetInnerHTML={{ __html: `
+          :root {
+            --font-inter: ${fontStack};
+          }
+          body {
+            font-family: var(--font-inter);
+          }
+        `}} />
+      </head>
       <body className="antialiased bg-white selection:bg-brand-purple/10 text-foreground overflow-x-hidden">
         <AuthProvider>
           {children}

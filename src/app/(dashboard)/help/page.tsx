@@ -40,7 +40,7 @@ export default function HelpPage() {
                 <div className="absolute top-0 right-0 w-64 h-64 bg-brand-purple/20 blur-[100px] rounded-full" />
                 <div className="relative z-10 flex flex-col md:flex-row justify-between items-center gap-8 text-center md:text-left">
                     <div>
-                        <h2 className="text-2xl font-bold mb-2">Still need assistance?</h2>
+                        <h2 className="text-2xl font-bold mb-2 text-white">Still need assistance?</h2>
                         <p className="text-white/60">Our support engineers are available Monday to Friday, 9AM—6PM WAT.</p>
                     </div>
                     <div className="flex gap-4">
